@@ -1,7 +1,1 @@
- Built a secure AI-powered health chatbot using Node.js, Next.js, and KNN/XGBoost, achieving 94% emotion
- detection and 91% disease prediction accuracy; deployed on Streamlit Cloud for 1,500+ users with 99.95%
- uptime.
- • Ensured100%GDPR/HIPAAcompliancewithAES-256MongoDBencryptionandJWTauthentication; boosted
- user engagement by 45% via voice input.
- • Designed a Next.js/Tailwind dashboard for mood/symptom tracking, cutting interaction time by 40% and
- latency by 55%.# -MINDSAFE---AI-HEALTH-COMPANION
+ Designed and implemented an AI-driven Urban Road Hazard Intelligence System focused on improving road safety through predictive analytics and computer vision. Developed CNN and machine learning models for accurate pothole, manhole, and accident severity detection, achieving high prediction performance. Integrated SHAP explainability for transparent model insights, Twilio-based real-time emergency alerts, and an interactive Streamlit web application for live monitoring and visualization. The project aims to support smart city infrastructure by enabling faster hazard identification, reducing emergency response delays, and enhancing public safety through intelligent automation.
