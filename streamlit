@@ -1,0 +1,69 @@
+import subprocess
+import time
+from pyngrok import ngrok
+
+# Define your Streamlit app as a string
+streamlit_code = '''
+import streamlit as st
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing import image
+from PIL import Image
+import numpy as np
+from twilio.rest import Client
+
+st.title("🕳️ Pothole & Manhole Detection with SMS Alert")
+
+# Load models
+pothole_model = load_model("/content/pothole_model.h5")
+manhole_model = load_model("/content/open_closed_manhole_model.h5")
+
+def preprocess(img):
+    img = img.resize((150, 150))
+    arr = image.img_to_array(img) / 255.0
+    return np.expand_dims(arr, axis=0)
+
+def send_sms_alert(msg):
+    account_sid = "ACb814ea7e7559d73cf55e54309f0e51a3"
+    auth_token = "4a8f420e93fcba2f778070b014c66938"
+    client = Client(account_sid, auth_token)
+    message = client.messages.create(
+        body=msg,
+        from_="+13166694622",  # Your Twilio number
+        to="+917601005203"    # Your verified number
+    )
+    st.info("📩 SMS alert sent!")
+
+uploaded = st.file_uploader("Upload road image", type=["jpg", "jpeg", "png"])
+if uploaded:
+    img = Image.open(uploaded)
+    st.image(img, use_column_width=True)
+    input_img = preprocess(img)
+
+    pothole = pothole_model.predict(input_img)[0][0]
+    if pothole > 0.5:
+        st.error("🕳️ Pothole Detected")
+
+        manhole = manhole_model.predict(input_img)[0][0]
+        if manhole > 0.5:
+            st.warning("🚨 Open Manhole Detected")
+            if st.button("📤 Send Alert"):
+                send_sms_alert("⚠️ ALERT: Pothole + Open Manhole detected!")
+        else:
+            st.success("✅ Closed Manhole Detected")
+    else:
+        st.success("✅ No Pothole Detected")
+'''
+
+# Save to a temporary file
+with open("app_temp.py", "w") as f:
+    f.write(streamlit_code)
+
+# Start Streamlit in the background
+subprocess.Popen(["streamlit", "run", "app_temp.py"])
+
+# Give Streamlit time to spin up
+time.sleep(5)
+
+# Connect ngrok
+public_url = ngrok.connect(8501)
+print("🌐 Your Streamlit app is live at:", public_url)
